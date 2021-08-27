@@ -4,11 +4,11 @@ module.exports = {
         port: 8080,
         proxy: {
             '/': {
-                target: 'https://pan.fyzzz.cn',
+                target: 'http://localhost:8090',
                 changeOrigin: true,
                 ws: false,
                 pathRewrite: {
-                    '^/': ''
+                    '^/api': '/'
                 }
             }
         }

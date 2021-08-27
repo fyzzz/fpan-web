@@ -102,16 +102,9 @@ export default {
             }
         },
         logout() {
-            this.postFormRequest("/logout", {}).then(resp => {
-                if (resp && resp.data.status === 1) {
-                    this.$store.commit('logout');
-                    this.$router.push('/');
-                } else {
-                    this.$message({
-                        message: resp.data.msg,
-                        type: 'error'
-                    });
-                }
+            this.postFormRequest("/logout", {}).then(() => {
+                this.$store.commit('logout');
+                this.$router.push('/');
             })
         },
         submitForm() {

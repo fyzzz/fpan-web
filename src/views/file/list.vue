@@ -2,12 +2,22 @@
     el-container
         el-header(style={})
             el-button(type="primary") 上传
-            el-button() 新建文件夹
+            el-button(@click="dialogFormVisible=true") 新建文件夹
+            el-dialog(title="新建文件夹", :visible.sync="dialogFormVisible" width="30%")
+                el-form(:model="mkdirForm")
+                    el-form-item(label='名称：' label-width='60px')
+                        el-input(v-model="mkdirForm.name" autocomplete="off")
+                div(slot="footer" class="dialog-footer")
+                    el-button(@click="dialogFormVisible = false") 取 消
+                    el-button(type="primary" @click="mkdir") 确 定
         el-main
             el-table(:data="tableData", stripe style="width: 100%")
                 el-table-column(v-for="item in columnList"
                     :key="item.prop", :prop="item.prop", :label="item.label"
                 )
+                el-table-column(fixed="right" label="操作" width="100")
+                    template(slot-scope="scope")
+                        el-button(@click="deleteFile(scope.row)" type="text" size="small") 删除
 
 </template>
 
@@ -26,6 +36,8 @@ export default {
             path: '/',
             tableData: [],
             columnList: columnList,
+            dialogFormVisible: false,
+            mkdirForm: {name: ''}
         }
     },
     mounted() {
@@ -37,7 +49,30 @@ export default {
             _this.getRequest(`/fileInfo/list?path=${_this.path}`).then(resp => {
                 _this.tableData = resp;
             })
-        }
+        },
+        mkdir() {
+            let _this = this;
+            _this.postRequest(`/fileInfo/mkdir`, {
+                path: _this.path + _this.mkdirForm.name
+            }).then(() => {
+                _this.$message.success("创建成功");
+                _this.getData();
+                _this.mkdirForm = [];
+                _this.dialogFormVisible = false;
+            })
+        },
+        deleteFile(val) {
+            let _this = this;
+            // todo 添加确认按钮
+            _this.postRequest(`/fileInfo/delete`, {
+                path: val.path
+            }).then(() => {
+                _this.$message.success("删除成功");
+                _this.getData();
+                _this.mkdirForm = [];
+                _this.dialogFormVisible = false;
+            })
+        },
     }
 }
 </script>
