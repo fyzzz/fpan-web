@@ -45,10 +45,8 @@ axios.interceptors.response.use(response => {
         MessageBox.alert(errorInfo,"提示",{
             confirmButtonText:'确定',
             callback:() => {
-                postFormRequest('/logout',{}).then(resp => {
-                    if(resp && resp.data.status){
-                        router.push("/login");
-                    }
+                postFormRequest('/logout',{}).then(() => {
+                    router.push("/login");
                 })
             }
         })

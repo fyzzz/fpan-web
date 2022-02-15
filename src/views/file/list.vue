@@ -63,15 +63,25 @@ export default {
         },
         deleteFile(val) {
             let _this = this;
-            // todo 添加确认按钮
-            _this.postRequest(`/fileInfo/delete`, {
-                path: val.path
+            _this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
             }).then(() => {
-                _this.$message.success("删除成功");
-                _this.getData();
-                _this.mkdirForm = [];
-                _this.dialogFormVisible = false;
-            })
+                _this.postRequest(`/fileInfo/delete`, {
+                    path: val.path
+                }).then(() => {
+                    _this.$message.success("删除成功");
+                    _this.getData();
+                    _this.mkdirForm = [];
+                    _this.dialogFormVisible = false;
+                })
+            }).catch(() => {
+                _this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
         },
     }
 }
